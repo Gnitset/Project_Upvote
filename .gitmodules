@@ -1,0 +1,6 @@
+[submodule "imgurpython"]
+	path = imgurpython
+	url = https://github.com/Imgur/imgurpython
+[submodule "requests"]
+	path = requests
+	url = git://github.com/kennethreitz/requests
