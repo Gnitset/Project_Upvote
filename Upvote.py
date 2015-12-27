@@ -31,13 +31,14 @@ comment_pages=total_comments/50
 
 print "Trying to upvote %s comments with following limits: %s"%(total_comments, client.credits)
 
-comments=list()
+comments=set()
 comments_full = comments
 
 for Z in range(0,comment_pages+1):
-	comments.extend(client.get_account_comment_ids(user, page=Z))
+	comments.update(client.get_account_comment_ids(user, page=Z))
 
 co_d=dict()
+comments_done=set()
 
 lengths=(len(comments), len(co_d))
 while comments:
@@ -45,7 +46,7 @@ while comments:
 	if client.credits['UserRemaining'] != None and len(comments) > int(client.credits['UserRemaining']):
 		print "Breaking due to limits: %s"%str(client.credits)
 		break
-	for idx,comment in enumerate(comments):
+	for idx,comment in enumerate(comments-comments_done):
 		try:
 			if not co_d.has_key(comment):
 				co_d[comment] = client.get_comment(comment)
@@ -54,7 +55,7 @@ while comments:
 				print "Upvoted comment id: %s, idx: %s"%(comment, idx)
 			else:
 				print "Comment already upvoted id: %s, idx: %s"%(comment, idx)
-			comments.remove(comment)
+			comments_done.add(comment)
 		except ImgurClientError as error:
 			time.sleep(0.5)
 			print "Request failed for comment id: %s, idx: %s"%(comment, idx)
